@@ -3,313 +3,639 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log a Closing — Jose · eXp Realty</title>
+  <title>Transaction Intake Form — Jose · eXp Realty</title>
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+  <!-- STYLES -->
   <style>
+    :root {
+      --primary: #0f172a;       /* Deep Navy */
+      --accent: #c5a059;        /* Warm Gold */
+      --accent-hover: #b48f48;
+      --bg: #f8fafc;            /* Off-white background */
+      --surface: #ffffff;       /* Pure white card surface */
+      --text: #1e293b;          /* Charcoal text */
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --border-focus: #c5a059;
+      --success: #10b981;
+      --error: #ef4444;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f3ef; min-height: 100vh; padding: 20px; }
-    .container { max-width: 680px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); overflow: hidden; }
-    .header { background: #1a1714; color: white; padding: 28px 32px; }
-    .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-    .header p { font-size: 13px; color: #b0a89e; margin-top: 4px; }
-    .form-body { padding: 32px; }
-    .section { margin-bottom: 28px; }
-    .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #c8973a; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #f5f3ef; }
-    .field-row { display: grid; gap: 16px; margin-bottom: 16px; }
-    .field-row.cols-2 { grid-template-columns: 1fr 1fr; }
-    .field-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-    .field { display: flex; flex-direction: column; }
-    label { font-size: 12px; font-weight: 600; color: #6b6560; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-    input, select, textarea { border: 1.5px solid #e0dbd4; border-radius: 6px; padding: 10px 12px; font-size: 14px; font-family: inherit; color: #1a1714; background: #fefefe; transition: border-color 0.2s; outline: none; }
-    input:focus, select:focus, textarea:focus { border-color: #c8973a; background: #fffdf7; }
-    input[type="number"] { -moz-appearance: textfield; }
-    input::placeholder { color: #b8b0a8; }
-    .required-star { color: #c8973a; margin-left: 2px; }
 
-    /* Calculated / read-only field */
-    .calc-field { background: #f5f3ef; color: #1a1714; font-weight: 700; border-color: #d4c9a8; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--primary);
+      background-image: radial-gradient(circle at 20% 20%, rgba(197, 160, 89, 0.05) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(197, 160, 89, 0.05) 0%, transparent 40%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
-    /* Deal source banners */
-    .deal-banner { border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .deal-banner.onmarket  { background: #eef3fa; color: #1e3a5f; border: 1.5px solid #b8cce4; }
-    .deal-banner.offmarket { background: #f0faf4; color: #2d6a4f; border: 1.5px solid #b7e4c7; }
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-out;
+    }
 
-    /* Commission panels */
-    #comm-onmarket  { display: none; }
-    #comm-offmarket { display: none; }
-    #comm-placeholder { color: #b8b0a8; font-size: 13px; font-style: italic; padding: 12px 0; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    .field-hint { font-size: 11px; color: #8a8480; margin-top: 4px; font-style: italic; }
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+    }
 
-    .submit-btn { width: 100%; padding: 16px; background: #1a1714; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s; margin-top: 8px; }
-    .submit-btn:hover { background: #2d2520; }
-    .success-msg { background: #f0faf4; border: 2px solid #2d6a4f; border-radius: 8px; padding: 16px 20px; margin-top: 16px; display: none; }
-    .success-msg .icon { font-size: 24px; margin-bottom: 6px; }
-    .success-msg p { color: #2d6a4f; font-size: 14px; font-weight: 600; }
-    .error-msg { background: #faf0f0; border: 2px solid #a33; border-radius: 8px; padding: 16px 20px; margin-top: 16px; display: none; }
-    .error-msg p { color: #a33; font-size: 14px; }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+    }
 
-    @media (max-width: 600px) { .field-row.cols-2, .field-row.cols-3 { grid-template-columns: 1fr; } }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 600;
+    }
+
+    .form-body { padding: 40px; }
+
+    .section { margin-bottom: 48px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .field-row {
+      display: grid;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, select, textarea {
+      appearance: none;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      transition: var(--transition);
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    .required-star { color: var(--accent); margin-left: 2px; }
+
+    /* Custom Select Arrow */
+    .select-wrapper { position: relative; }
+    .select-wrapper::after {
+      content: '↓';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      pointer-events: none;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Commission Panels */
+    .commission-panel {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      display: none;
+      animation: slideDown 0.4s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .banner.on-market { background: rgba(15, 23, 42, 0.05); color: var(--primary); border-left: 4px solid var(--primary); }
+    .banner.off-market { background: rgba(197, 160, 89, 0.1); color: var(--accent-hover); border-left: 4px solid var(--accent); }
+
+    .calc-field {
+      background: var(--surface);
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    #comm-placeholder {
+      color: var(--text-muted);
+      font-size: 14px;
+      font-style: italic;
+      text-align: center;
+      padding: 30px;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: var(--transition);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .submit-btn:hover {
+      background: #1e293b;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    .submit-btn:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Status Messages */
+    .status-msg {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .success-msg { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+    .status-content { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .status-icon { font-size: 20px; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .cols-2, .cols-3 { grid-template-columns: 1fr; }
+      .form-body { padding: 24px; }
+      .header { padding: 40px 20px; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>📋 Log a Closing</h1>
+    <header class="header">
+      <h1>Transaction Intake</h1>
       <p>Jose · eXp Realty · Houston, TX · 2026</p>
-    </div>
-    <form class="form-body" id="txForm" onsubmit="submitForm(event)">
+    </header>
+
+    <div class="form-body">
+      <!-- Feedback Messages -->
+      <div id="successMsg" class="status-msg success-msg">
+        <div class="status-content">
+          <span class="status-icon">✓</span>
+          <span id="successText">Transaction logged successfully!</span>
+        </div>
+      </div>
+
+      <div id="errorMsg" class="status-msg error-msg">
+        <div class="status-content">
+          <span class="status-icon">✕</span>
+          <span id="errorText">An error occurred. Please try again.</span>
+        </div>
+      </div>
+
+      <form id="txForm" novalidate>
 
       <!-- PROPERTY INFO -->
-      <div class="section">
-        <div class="section-title">Property Information</div>
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Property Information</h2>
+        </div>
+
         <div class="field-row">
           <div class="field">
-            <label>Street Address <span class="required-star">*</span></label>
+            <label for="address">Street Address <span class="required-star">*</span></label>
             <input type="text" id="address" placeholder="123 Main Street" required>
           </div>
         </div>
+
         <div class="field-row cols-3">
           <div class="field">
-            <label>City</label>
+            <label for="city">City</label>
             <input type="text" id="city" value="Houston">
           </div>
           <div class="field">
-            <label>ZIP Code</label>
+            <label for="zip">ZIP Code</label>
             <input type="text" id="zip" placeholder="77001">
           </div>
           <div class="field">
-            <label>Close Date <span class="required-star">*</span></label>
+            <label for="closeDate">Close Date <span class="required-star">*</span></label>
             <input type="date" id="closeDate" required>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- DEAL DETAILS -->
-      <div class="section">
-        <div class="section-title">Deal Details</div>
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Deal Details</h2>
+        </div>
+
         <div class="field-row cols-2">
           <div class="field">
-            <label>Transaction Type <span class="required-star">*</span></label>
-            <select id="txType" required>
-              <option value="">Select...</option>
-              <option value="Buyer Side">Buyer Side</option>
-              <option value="Seller Side">Seller Side</option>
-              <option value="Dual Agency">Dual Agency</option>
-            </select>
+            <label for="txType">Transaction Type <span class="required-star">*</span></label>
+            <div class="select-wrapper">
+              <select id="txType" required>
+                <option value="">Select side...</option>
+                <option value="Buyer Side">Buyer Side</option>
+                <option value="Seller Side">Seller Side</option>
+                <option value="Dual Agency">Dual Agency</option>
+              </select>
+            </div>
           </div>
           <div class="field">
-            <label>Deal Source <span class="required-star">*</span></label>
-            <select id="dealSource" required onchange="handleDealSource()">
-              <option value="">Select...</option>
-              <option value="On-Market">On-Market (MLS)</option>
-              <option value="Off-Market">Off-Market</option>
-            </select>
+            <label for="dealSource">Deal Source <span class="required-star">*</span></label>
+            <div class="select-wrapper">
+              <select id="dealSource" required>
+                <option value="">Select source...</option>
+                <option value="On-Market">On-Market (MLS)</option>
+                <option value="Off-Market">Off-Market</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- FINANCIAL DETAILS -->
-      <div class="section">
-        <div class="section-title">Financial Details</div>
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Financial Details</h2>
+        </div>
 
-        <!-- Sale Price always visible -->
         <div class="field-row">
           <div class="field">
-            <label>Sale Price <span class="required-star">*</span></label>
+            <label for="salePrice">Sale Price <span class="required-star">*</span></label>
             <input type="number" id="salePrice" placeholder="350000" min="0" step="1" required>
           </div>
         </div>
 
-        <!-- Prompt before deal source is selected -->
-        <div id="comm-placeholder">← Select a Deal Source above to enter commission details</div>
+        <div id="comm-placeholder">Select a Deal Source above to enter commission details</div>
 
-        <!-- ON-MARKET panel: Gross + eXp Split + Net (auto) -->
-        <div id="comm-onmarket">
-          <div class="deal-banner onmarket">🏢 On-Market — copy the dollar amounts from your eXp CDA</div>
+        <!-- ON-MARKET PANEL -->
+        <div id="comm-onmarket" class="commission-panel">
+          <div class="banner on-market">
+            <span>🏢</span>
+            <span>On-Market — Enter CDA details for auto-calculation</span>
+          </div>
           <div class="field-row cols-3">
             <div class="field">
-              <label>Gross Commission $ <span class="required-star">*</span></label>
-              <input type="number" id="grossComm" placeholder="9000.00" min="0" step="0.01" oninput="calcNet()">
-              <span class="field-hint">From your CDA</span>
+              <label for="grossComm">Gross Commission <span class="required-star">*</span></label>
+              <input type="number" id="grossComm" placeholder="0.00" min="0" step="0.01">
+              <span class="field-hint">From CDA</span>
             </div>
             <div class="field">
-              <label>eXp Split $ <span class="required-star">*</span></label>
-              <input type="number" id="expSplit" placeholder="2000.00" min="0" step="0.01" oninput="calcNet()">
-              <span class="field-hint">From your CDA</span>
+              <label for="expSplit">eXp Split <span class="required-star">*</span></label>
+              <input type="number" id="expSplit" placeholder="0.00" min="0" step="0.01">
+              <span class="field-hint">From CDA</span>
             </div>
             <div class="field">
               <label>Your Net $</label>
-              <input type="number" id="netComm" class="calc-field" placeholder="Auto-calculated" readonly>
-              <span class="field-hint">Gross − eXp Split</span>
+              <input type="number" id="netComm" class="calc-field" placeholder="0.00" readonly tabindex="-1">
+              <span class="field-hint">Auto-calculated</span>
             </div>
           </div>
         </div>
 
-        <!-- OFF-MARKET panel: single amount field -->
-        <div id="comm-offmarket">
-          <div class="deal-banner offmarket">💵 Off-Market — paid directly to you at closing, no eXp split</div>
-          <div class="field-row cols-2">
+        <!-- OFF-MARKET PANEL -->
+        <div id="comm-offmarket" class="commission-panel">
+          <div class="banner off-market">
+            <span>💵</span>
+            <span>Off-Market — Paid directly to you at closing</span>
+          </div>
+          <div class="field-row">
             <div class="field">
-              <label>Amount You Were Paid $ <span class="required-star">*</span></label>
-              <input type="number" id="offmarketPaid" placeholder="8500.00" min="0" step="0.01">
-              <span class="field-hint">What hit your account at closing</span>
+              <label for="offmarketPaid">Amount You Were Paid <span class="required-star">*</span></label>
+              <input type="number" id="offmarketPaid" placeholder="0.00" min="0" step="0.01">
+              <span class="field-hint">Final amount received</span>
             </div>
           </div>
         </div>
-
-      </div>
+      </section>
 
       <!-- CLIENT INFO -->
-      <div class="section">
-        <div class="section-title">Client Information</div>
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Client Information</h2>
+        </div>
+
         <div class="field-row">
           <div class="field">
-            <label>Client Name <span class="required-star">*</span></label>
+            <label for="clientName">Client Name <span class="required-star">*</span></label>
             <input type="text" id="clientName" placeholder="Full Name" required>
           </div>
         </div>
+
         <div class="field-row cols-2">
           <div class="field">
-            <label>Client Email</label>
-            <input type="email" id="clientEmail" placeholder="email@example.com">
+            <label for="clientEmail">Email Address</label>
+            <input type="email" id="clientEmail" placeholder="client@example.com">
           </div>
           <div class="field">
-            <label>Client Phone</label>
+            <label for="clientPhone">Phone Number</label>
             <input type="tel" id="clientPhone" placeholder="(713) 555-0100">
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- NOTES -->
-      <div class="section">
-        <div class="section-title">Notes</div>
-        <div class="field-row">
-          <div class="field">
-            <label>Additional Notes</label>
-            <textarea id="notes" rows="3" placeholder="Referral source, special circumstances, follow-up reminders..."></textarea>
-          </div>
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Additional Notes</h2>
         </div>
-      </div>
+        <div class="field">
+          <textarea id="notes" rows="4" placeholder="Referral source, special circumstances, or follow-up reminders..."></textarea>
+        </div>
+      </section>
 
-      <button type="submit" class="submit-btn" id="submitBtn">📤 Log This Transaction</button>
-
-      <div class="success-msg" id="successMsg">
-        <div class="icon">✅</div>
-        <p id="successText">Transaction logged successfully! Check your Google Sheet.</p>
-      </div>
-      <div class="error-msg" id="errorMsg">
-        <p id="errorText">Something went wrong. Please check the Apps Script URL.</p>
-      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span>Log This Transaction</span>
+      </button>
 
     </form>
   </div>
 
+  <!-- SCRIPTS -->
   <script>
-    // ── PASTE YOUR APPS SCRIPT URL HERE ──────────────────────────
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzs8_O-8JELQk853S-GCLQa16lWY6aJ70E8-jgWzUPgfBprLc0Cy_RHlSoZvygVYBgOQ/exec";
-    // ─────────────────────────────────────────────────────────────
+    (function() {
+      "use strict";
 
-    // Set today's date as default
-    document.getElementById('closeDate').valueAsDate = new Date();
+      // ── CONFIGURATION ──────────────────────────────────────────
+      const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzs8_O-8JELQk853S-GCLQa16lWY6aJ70E8-jgWzUPgfBprLc0Cy_RHlSoZvygVYBgOQ/exec";
 
-    // Auto-calculate Net = Gross - eXp Split (on-market only)
-    function calcNet() {
-      const gross = parseFloat(document.getElementById('grossComm').value) || 0;
-      const split = parseFloat(document.getElementById('expSplit').value)  || 0;
-      const net   = gross - split;
-      document.getElementById('netComm').value = net > 0 ? net.toFixed(2) : '';
-    }
+      // ── DOM ELEMENTS CACHING ───────────────────────────────────
+      const $ = (id) => document.getElementById(id);
 
-    // Show the right commission panel based on deal source
-    function handleDealSource() {
-      const source = document.getElementById('dealSource').value;
+      const form = $('txForm');
+      const submitBtn = $('submitBtn');
+      const dealSource = $('dealSource');
+      const commPlaceholder = $('comm-placeholder');
+      const commOnMarket = $('comm-onmarket');
+      const commOffMarket = $('comm-offmarket');
 
-      document.getElementById('comm-placeholder').style.display = source ? 'none' : 'block';
-      document.getElementById('comm-onmarket').style.display    = source === 'On-Market'  ? 'block' : 'none';
-      document.getElementById('comm-offmarket').style.display   = source === 'Off-Market' ? 'block' : 'none';
+      const grossCommInput = $('grossComm');
+      const expSplitInput = $('expSplit');
+      const netCommInput = $('netComm');
+      const offMarketPaidInput = $('offmarketPaid');
 
-      // Clear the other panel's fields when switching sources
-      if (source === 'On-Market') {
-        document.getElementById('offmarketPaid').value = '';
-      } else if (source === 'Off-Market') {
-        document.getElementById('grossComm').value = '';
-        document.getElementById('expSplit').value  = '';
-        document.getElementById('netComm').value   = '';
+      const successMsg = $('successMsg');
+      const errorMsg = $('errorMsg');
+      const successText = $('successText');
+      const errorText = $('errorText');
+
+      // ── INITIALIZATION ─────────────────────────────────────────
+      $('closeDate').valueAsDate = new Date();
+
+      // ── EVENT LISTENERS ────────────────────────────────────────
+      dealSource.addEventListener('change', handleDealSource);
+      [grossCommInput, expSplitInput].forEach(el => el.addEventListener('input', calcNet));
+      form.addEventListener('submit', handleSubmit);
+
+      // ── LOGIC FUNCTIONS ───────────────────────────────────────
+
+      function handleDealSource() {
+        const source = dealSource.value;
+
+        // Toggle panels
+        commPlaceholder.style.display = source ? 'none' : 'block';
+        commOnMarket.style.display = source === 'On-Market' ? 'block' : 'none';
+        commOffMarket.style.display = source === 'Off-Market' ? 'block' : 'none';
+
+        // Reset and update validation requirements
+        if (source === 'On-Market') {
+          offMarketPaidInput.value = '';
+          offMarketPaidInput.required = false;
+          grossCommInput.required = true;
+          expSplitInput.required = true;
+        } else if (source === 'Off-Market') {
+          grossCommInput.value = '';
+          expSplitInput.value = '';
+          netCommInput.value = '';
+          grossCommInput.required = false;
+          expSplitInput.required = false;
+          offMarketPaidInput.required = true;
+        } else {
+          grossCommInput.required = false;
+          expSplitInput.required = false;
+          offMarketPaidInput.required = false;
+        }
       }
-    }
 
-    // Form submission
-    async function submitForm(e) {
-      e.preventDefault();
-
-      const source = document.getElementById('dealSource').value;
-
-      // Build commission values based on deal type
-      let grossComm, expSplit, netComm;
-      if (source === 'On-Market') {
-        grossComm = parseFloat(document.getElementById('grossComm').value) || 0;
-        expSplit  = parseFloat(document.getElementById('expSplit').value)  || 0;
-        netComm   = grossComm - expSplit;
-        if (grossComm === 0) { alert('Please enter your Gross Commission from the CDA.'); return; }
-      } else {
-        // Off-market: amount paid = gross = net, split = 0
-        const paid = parseFloat(document.getElementById('offmarketPaid').value) || 0;
-        if (paid === 0) { alert('Please enter the amount you were paid.'); return; }
-        grossComm = paid;
-        expSplit  = 0;
-        netComm   = paid;
+      function calcNet() {
+        const gross = parseFloat(grossCommInput.value) || 0;
+        const split = parseFloat(expSplitInput.value) || 0;
+        const net = gross - split;
+        netCommInput.value = net > 0 ? net.toFixed(2) : '0.00';
       }
 
-      const btn = document.getElementById('submitBtn');
-      btn.textContent = '⏳ Logging...';
-      btn.disabled = true;
+      async function handleSubmit(e) {
+        e.preventDefault();
 
-      const data = {
-        closeDate:   document.getElementById('closeDate').value,
-        address:     document.getElementById('address').value,
-        city:        document.getElementById('city').value,
-        zip:         document.getElementById('zip').value,
-        txType:      document.getElementById('txType').value,
-        dealSource:  source,
-        salePrice:   parseFloat(document.getElementById('salePrice').value) || 0,
-        grossComm:   grossComm,
-        expSplit:    expSplit,
-        netComm:     netComm,
-        clientName:  document.getElementById('clientName').value,
-        clientEmail: document.getElementById('clientEmail').value,
-        clientPhone: document.getElementById('clientPhone').value,
-        notes:       document.getElementById('notes').value
-      };
+        // Reset status UI
+        successMsg.style.display = 'none';
+        errorMsg.style.display = 'none';
 
-      try {
-        await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: { 'Content-Type': 'text/plain' }
-        });
+        // Validate form
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
 
-        document.getElementById('successText').textContent =
-          'Transaction logged for ' + data.address + '! Check your Google Sheet.';
-        document.getElementById('successMsg').style.display = 'block';
-        document.getElementById('errorMsg').style.display   = 'none';
+        const source = dealSource.value;
+        let grossComm, expSplit, netComm;
 
-        // Reset form
-        e.target.reset();
-        document.getElementById('closeDate').valueAsDate = new Date();
-        document.getElementById('city').value            = 'Houston';
-        document.getElementById('comm-placeholder').style.display = 'block';
-        document.getElementById('comm-onmarket').style.display    = 'none';
-        document.getElementById('comm-offmarket').style.display   = 'none';
+        if (source === 'On-Market') {
+          grossComm = parseFloat(grossCommInput.value) || 0;
+          expSplit = parseFloat(expSplitInput.value) || 0;
+          netComm = grossComm - expSplit;
+          if (grossComm <= 0) {
+            showError("Please enter a valid Gross Commission.");
+            return;
+          }
+        } else {
+          const paid = parseFloat(offMarketPaidInput.value) || 0;
+          if (paid <= 0) {
+            showError("Please enter the amount you were paid.");
+            return;
+          }
+          grossComm = paid;
+          expSplit = 0;
+          netComm = paid;
+        }
 
-      } catch (err) {
-        document.getElementById('errorMsg').style.display   = 'block';
-        document.getElementById('errorText').textContent    = 'Error: ' + err.message;
-        document.getElementById('successMsg').style.display = 'none';
-      } finally {
-        btn.textContent = '📤 Log This Transaction';
-        btn.disabled = false;
+        // Set loading state
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = 'Processing...';
+
+        const data = {
+          closeDate: $('closeDate').value,
+          address: $('address').value,
+          city: $('city').value,
+          zip: $('zip').value,
+          txType: $('txType').value,
+          dealSource: source,
+          salePrice: parseFloat($('salePrice').value) || 0,
+          grossComm: grossComm,
+          expSplit: expSplit,
+          netComm: netComm,
+          clientName: $('clientName').value,
+          clientEmail: $('clientEmail').value,
+          clientPhone: $('clientPhone').value,
+          notes: $('notes').value
+        };
+
+        try {
+          const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'text/plain' }
+          });
+
+          if (!response.ok) throw new Error("Network response was not ok");
+
+          showSuccess(`Transaction logged for ${data.address}!`);
+          form.reset();
+          $('closeDate').valueAsDate = new Date();
+          handleDealSource();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } catch (err) {
+          showError(`Submission failed: ${err.message}`);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.querySelector('span').textContent = 'Log This Transaction';
+        }
       }
-    }
+
+      function showSuccess(msg) {
+        successText.textContent = msg;
+        successMsg.style.display = 'block';
+        errorMsg.style.display = 'none';
+      }
+
+      function showError(msg) {
+        errorText.textContent = msg;
+        errorMsg.style.display = 'block';
+        successMsg.style.display = 'none';
+      }
+
+    })();
   </script>
 </body>
 </html>
