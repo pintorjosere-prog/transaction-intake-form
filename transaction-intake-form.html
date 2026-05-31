@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transaction Intake Form — Jose · eXp Realty</title>
+  <title>Transaction Intake Form â Jose Â· eXp Realty</title>
 
   <!-- GOOGLE FONTS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -165,7 +165,7 @@
     /* Custom Select Arrow */
     .select-wrapper { position: relative; }
     .select-wrapper::after {
-      content: '↓';
+      content: 'â';
       position: absolute;
       right: 16px;
       top: 50%;
@@ -292,21 +292,21 @@
   <div class="container">
     <header class="header">
       <h1>Transaction Intake</h1>
-      <p>Jose · eXp Realty · Houston, TX · 2026</p>
+      <p>Jose Â· eXp Realty Â· Houston, TX Â· 2026</p>
     </header>
 
     <div class="form-body">
       <!-- Feedback Messages -->
       <div id="successMsg" class="status-msg success-msg">
         <div class="status-content">
-          <span class="status-icon">✓</span>
+          <span class="status-icon">â</span>
           <span id="successText">Transaction logged successfully!</span>
         </div>
       </div>
 
       <div id="errorMsg" class="status-msg error-msg">
         <div class="status-content">
-          <span class="status-icon">✕</span>
+          <span class="status-icon">â</span>
           <span id="errorText">An error occurred. Please try again.</span>
         </div>
       </div>
@@ -391,8 +391,8 @@
         <!-- ON-MARKET PANEL -->
         <div id="comm-onmarket" class="commission-panel">
           <div class="banner on-market">
-            <span>🏢</span>
-            <span>On-Market — Enter CDA details for auto-calculation</span>
+            <span>ð¢</span>
+            <span>On-Market â Enter CDA details for auto-calculation</span>
           </div>
           <div class="field-row cols-3">
             <div class="field">
@@ -416,8 +416,8 @@
         <!-- OFF-MARKET PANEL -->
         <div id="comm-offmarket" class="commission-panel">
           <div class="banner off-market">
-            <span>💵</span>
-            <span>Off-Market — Paid directly to you at closing</span>
+            <span>ðµ</span>
+            <span>Off-Market â Paid directly to you at closing</span>
           </div>
           <div class="field-row">
             <div class="field">
@@ -449,7 +449,7 @@
           </div>
           <div class="field">
             <label for="clientPhone">Phone Number</label>
-            <input type="tel" id="clientPhone" placeholder="(713) 555-0100">
+            <input type="tel" id="clientPhone" placeholder="(713) 555-0100" onblur="formatPhone(this)">
           </div>
         </div>
       </section>
@@ -476,10 +476,10 @@
     (function() {
       "use strict";
 
-      // ── CONFIGURATION ──────────────────────────────────────────
+      // ââ CONFIGURATION ââââââââââââââââââââââââââââââââââââââââââ
       const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzs8_O-8JELQk853S-GCLQa16lWY6aJ70E8-jgWzUPgfBprLc0Cy_RHlSoZvygVYBgOQ/exec";
 
-      // ── DOM ELEMENTS CACHING ───────────────────────────────────
+      // ââ DOM ELEMENTS CACHING âââââââââââââââââââââââââââââââââââ
       const $ = (id) => document.getElementById(id);
 
       const form = $('txForm');
@@ -499,15 +499,15 @@
       const successText = $('successText');
       const errorText = $('errorText');
 
-      // ── INITIALIZATION ─────────────────────────────────────────
+      // ââ INITIALIZATION âââââââââââââââââââââââââââââââââââââââââ
       $('closeDate').valueAsDate = new Date();
 
-      // ── EVENT LISTENERS ────────────────────────────────────────
+      // ââ EVENT LISTENERS ââââââââââââââââââââââââââââââââââââââââ
       dealSource.addEventListener('change', handleDealSource);
       [grossCommInput, expSplitInput].forEach(el => el.addEventListener('input', calcNet));
       form.addEventListener('submit', handleSubmit);
 
-      // ── LOGIC FUNCTIONS ───────────────────────────────────────
+      // ââ LOGIC FUNCTIONS âââââââââââââââââââââââââââââââââââââââ
 
       function handleDealSource() {
         const source = dealSource.value;
@@ -636,6 +636,15 @@
       }
 
     })();
-  </script>
+  
+function formatPhone(input) {
+    const digits = input.value.replace(/\D/g, '');
+    if (digits.length === 10) {
+        input.value = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6);
+    } else if (digits.length === 11 && digits[0] === '1') {
+        input.value = '(' + digits.slice(1,4) + ') ' + digits.slice(4,7) + '-' + digits.slice(7);
+    }
+}
+</script>
 </body>
 </html>
